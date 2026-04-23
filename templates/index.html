@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Safety App</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 🔥 ICON LIBRARY -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background: radial-gradient(circle, #0f2027, #000);
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* flashing danger background */
+.flash {
+    animation: flash 0.5s infinite alternate;
+}
+
+@keyframes flash {
+    from { background: #000; }
+    to { background: #300; }
+}
+
+/* 🔐 LOGOUT BUTTON */
+.logout {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: red;
+    padding: 10px 15px;
+    border-radius: 10px;
+    color: white;
+    text-decoration: none;
+}
+
+/* 👤 PROFILE BUTTON (PREMIUM) */
+.profile-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 22px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 15px rgba(255,255,255,0.2);
+    transition: 0.3s;
+}
+
+.profile-btn:hover {
+    transform: scale(1.1);
+    background: rgba(255,255,255,0.2);
+}
+
+/* 🔴 SOS BUTTON */
+.sos {
+    width: 230px;
+    height: 230px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ff0000, #8b0000);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 60px red;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+#msg {
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 👤 PROFILE ICON -->
+<a href="/profile" class="profile-btn">
+    <i class="fas fa-user-circle"></i>
+</a>
+
+<!-- 🔐 LOGOUT -->
+<a href="/logout" class="logout">Logout</a>
+
+<h1>🚨 EMERGENCY MODE</h1>
+
+<div class="sos" onclick="triggerSOS()">SOS</div>
+
+<p id="msg"></p>
+
+<audio id="alarm" src="https://www.soundjay.com/button/beep-07.wav" loop></audio>
+
+<script>
+function triggerSOS() {
+    document.body.classList.add("flash");
+    document.getElementById("alarm").play();
+
+    if (navigator.vibrate) {
+        navigator.vibrate([500, 200, 500, 200]);
+    }
+
+    sendLocation();
+    sendEmail();
+    sendWhatsApp();
+}
+
+// 📍 LIVE LOCATION
+function sendLocation() {
+    if (!navigator.geolocation) {
+        document.getElementById("msg").innerText = "Location not supported!";
+        return;
+    }
+
+    navigator.geolocation.watchPosition(function(pos) {
+        let lat = pos.coords.latitude;
+        let lon = pos.coords.longitude;
+
+        fetch('/send_location', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({latitude: lat, longitude: lon})
+        });
+
+        document.getElementById("msg").innerText = "Location sending...";
+    });
+}
+
+// 📧 EMAIL
+function sendEmail() {
+    fetch('/send_alert', {method:'POST'})
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById("msg").innerText = data;
+    });
+}
+
+// 💬 WHATSAPP
+function sendWhatsApp() {
+    navigator.geolocation.getCurrentPosition(function(pos) {
+        let lat = pos.coords.latitude;
+        let lon = pos.coords.longitude;
+
+        let message = `🚨 HELP! My location: https://maps.google.com/?q=${lat},${lon}`;
+        let url = "https://wa.me/?text=" + encodeURIComponent(message);
+
+        window.open(url, "_blank");
+    });
+}
+</script>
+
+</body>
+</html>
