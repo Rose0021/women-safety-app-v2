@@ -1,0 +1,59 @@
+<script>
+
+document.getElementById("list").innerHTML =
+    "<p style='text-align:center;'>📍 Getting your location...</p>";
+
+if (navigator.geolocation) {
+
+    navigator.geolocation.getCurrentPosition(success, error);
+
+    function success(pos){
+        let lat = pos.coords.latitude;
+        let lon = pos.coords.longitude;
+
+        fetch(`/get_police?lat=${lat}&lon=${lon}`)
+        .then(res => res.json())
+        .then(data => {
+
+            let html = "";
+
+            data.forEach((p, index) => {
+                html += `
+                <div class="card ${index === 0 ? 'nearest' : ''}">
+                    <div class="title">🚓 ${p.name}</div>
+                    <div class="distance">${p.distance} km away</div>
+
+                    <div class="actions">
+                        <button class="btn call" onclick="callPolice()">📞 Call</button>
+                        <button class="btn map" onclick="openMap(${p.lat}, ${p.lon})">🗺 Map</button>
+                    </div>
+                </div>`;
+            });
+
+            document.getElementById("list").innerHTML = html;
+        });
+    }
+
+    function error(){
+        document.getElementById("list").innerHTML =
+            "<p style='text-align:center;'>⚠ Allow location access</p>";
+    }
+
+} else {
+    document.getElementById("list").innerHTML =
+        "<p style='text-align:center;'>❌ Not supported</p>";
+}
+
+function openMap(lat, lon){
+    window.open(`https://maps.google.com/?q=${lat},${lon}`);
+}
+
+function callPolice(){
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+        window.location.href = "tel:100";
+    } else {
+        alert("📞 Call 100 from phone");
+    }
+}
+
+</script>

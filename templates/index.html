@@ -5,7 +5,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- 🔥 ICON LIBRARY -->
+<!-- ICONS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
@@ -18,11 +18,12 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    justify-content: flex-start;
+    padding-top: 80px;
+    overflow-y: auto;
 }
 
-/* flashing danger background */
+/* flashing danger */
 .flash {
     animation: flash 0.5s infinite alternate;
 }
@@ -32,7 +33,7 @@ body {
     to { background: #300; }
 }
 
-/* 🔐 LOGOUT BUTTON */
+/* logout */
 .logout {
     position: absolute;
     top: 20px;
@@ -44,7 +45,7 @@ body {
     text-decoration: none;
 }
 
-/* 👤 PROFILE BUTTON (PREMIUM) */
+/* profile */
 .profile-btn {
     position: absolute;
     top: 20px;
@@ -56,19 +57,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: white;
     font-size: 22px;
     backdrop-filter: blur(10px);
     box-shadow: 0 0 15px rgba(255,255,255,0.2);
-    transition: 0.3s;
 }
 
-.profile-btn:hover {
-    transform: scale(1.1);
-    background: rgba(255,255,255,0.2);
-}
-
-/* 🔴 SOS BUTTON */
+/* SOS */
 .sos {
     width: 230px;
     height: 230px;
@@ -93,22 +87,138 @@ body {
 #msg {
     margin-top: 20px;
 }
+
+/* 🚨 Emergency Section */
+.emergency-section {
+    margin-top: 30px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.emergency-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.emergency-btn {
+    padding: 12px;
+    border-radius: 10px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    display: block;
+}
+
+.police { background: #e74c3c; }
+.child { background: #3498db; }
+.ambulance { background: #2ecc71; }
+.women { background: #9b59b6; }
+
+.emergency-btn:hover {
+    opacity: 0.85;
+}
+
+/* 💎 PREMIUM GLASS CARDS */
+.card {
+    padding: 18px;
+    border-radius: 18px;
+    backdrop-filter: blur(15px);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.card i {
+    font-size: 26px;
+    margin-bottom: 8px;
+}
+
+.card span {
+    display: block;
+    font-size: 14px;
+}
+
+.card:hover {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow: 0 0 25px rgba(255,255,255,0.2);
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,0.25);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: 0.4s;
+}
+
+.card:active::after {
+    width: 220px;
+    height: 220px;
+}
+
+.police { color: #ff4d4d; }
+.child { color: #4da6ff; }
+.ambulance { color: #2ecc71; }
+.women { color: #d980fa; }
 </style>
 </head>
 
 <body>
 
-<!-- 👤 PROFILE ICON -->
+<!-- PROFILE -->
 <a href="/profile" class="profile-btn">
     <i class="fas fa-user-circle"></i>
 </a>
 
-<!-- 🔐 LOGOUT -->
+<!-- LOGOUT -->
 <a href="/logout" class="logout">Logout</a>
 
 <h1>🚨 EMERGENCY MODE</h1>
 
+<!-- SOS -->
 <div class="sos" onclick="triggerSOS()">SOS</div>
+
+<!-- 🚨 EMERGENCY BUTTONS -->
+<div class="emergency-section">
+    <h3>Emergency Assistance</h3>
+
+    <div class="emergency-buttons">
+
+        <div class="card police" onclick="callNumber('100')">
+            <i class="fas fa-shield-alt"></i>
+            <span>Police</span>
+        </div>
+
+        <div class="card child" onclick="callNumber('1098')">
+            <i class="fas fa-child"></i>
+            <span>Child Help</span>
+        </div>
+
+        <div class="card ambulance" onclick="callNumber('108')">
+            <i class="fas fa-ambulance"></i>
+            <span>Ambulance</span>
+        </div>
+
+        <div class="card women" onclick="callNumber('1091')">
+            <i class="fas fa-female"></i>
+            <span>Women Help</span>
+        </div>
+
+    </div>
+</div>
 
 <p id="msg"></p>
 
@@ -128,13 +238,7 @@ function triggerSOS() {
     sendWhatsApp();
 }
 
-// 📍 LIVE LOCATION
 function sendLocation() {
-    if (!navigator.geolocation) {
-        document.getElementById("msg").innerText = "Location not supported!";
-        return;
-    }
-
     navigator.geolocation.watchPosition(function(pos) {
         let lat = pos.coords.latitude;
         let lon = pos.coords.longitude;
@@ -149,7 +253,6 @@ function sendLocation() {
     });
 }
 
-// 📧 EMAIL
 function sendEmail() {
     fetch('/send_alert', {method:'POST'})
     .then(res => res.text())
@@ -158,7 +261,6 @@ function sendEmail() {
     });
 }
 
-// 💬 WHATSAPP
 function sendWhatsApp() {
     navigator.geolocation.getCurrentPosition(function(pos) {
         let lat = pos.coords.latitude;
@@ -169,6 +271,13 @@ function sendWhatsApp() {
 
         window.open(url, "_blank");
     });
+}
+
+/* IMPORTANT FIX */
+function callNumber(num) {
+    if (confirm("Call " + num + " now?")) {
+        window.location.href = "tel:" + num;
+    }
 }
 </script>
 

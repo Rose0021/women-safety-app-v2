@@ -3,11 +3,19 @@
 <head>
 <title>Profile</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
+
+/* 🌌 Animated background */
 body {
     margin: 0;
     height: 100vh;
-    background: radial-gradient(circle, #0f2027, #000);
+    background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #000);
+    background-size: 400% 400%;
+    animation: gradientBG 10s ease infinite;
     font-family: 'Segoe UI', sans-serif;
     color: white;
     display: flex;
@@ -15,55 +23,152 @@ body {
     align-items: center;
 }
 
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* 💎 Main card */
 .card {
+    width: 90%;
+    max-width: 420px;
+    padding: 25px;
+    border-radius: 25px;
+    backdrop-filter: blur(20px);
     background: rgba(255,255,255,0.08);
-    padding: 30px;
-    border-radius: 20px;
-    width: 350px;
+    box-shadow: 0 0 40px rgba(0,255,255,0.15);
+    animation: fadeIn 0.6s ease;
+}
+
+/* entry animation */
+@keyframes fadeIn {
+    from {opacity:0; transform: translateY(30px);}
+    to {opacity:1; transform: translateY(0);}
+}
+
+/* 👤 Avatar */
+.avatar {
     text-align: center;
-    backdrop-filter: blur(15px);
+    margin-bottom: 10px;
+}
+
+.avatar i {
+    font-size: 70px;
+    color: #00e6ff;
+    text-shadow: 0 0 20px #00e6ff;
+}
+
+/* user info */
+.name {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.email {
+    text-align: center;
+    font-size: 13px;
+    opacity: 0.7;
+    margin-bottom: 15px;
+}
+
+/* section */
+.section {
+    margin-top: 15px;
+    font-size: 15px;
+}
+
+/* 💎 input group */
+.input-group {
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.input-group i {
+    margin-right: 10px;
+    opacity: 0.7;
 }
 
 input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 10px;
+    background: none;
     border: none;
+    outline: none;
+    color: white;
+    width: 100%;
 }
 
+/* 🚀 button */
 button {
     width: 100%;
     padding: 12px;
-    border-radius: 10px;
+    border-radius: 12px;
     border: none;
+    margin-top: 10px;
     background: linear-gradient(45deg, #00c6ff, #0072ff);
     color: white;
+    font-weight: bold;
     cursor: pointer;
+    transition: 0.3s;
 }
 
-a {
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #00c6ff;
+}
+
+/* back */
+.back {
+    display: block;
+    margin-top: 15px;
+    text-align: center;
     color: #00c6ff;
     text-decoration: none;
 }
+
 </style>
 </head>
 
 <body>
 
 <div class="card">
-    <h2>👤 Profile</h2>
 
-    <p><b>Username:</b> {{ user[0] }}</p>
-    <p><b>Email:</b> {{ user[1] }}</p>
+    <!-- 👤 Avatar -->
+    <div class="avatar">
+        <i class="fas fa-user-circle"></i>
+    </div>
+
+    <div class="name">{{ user[0] }}</div>
+    <div class="email">{{ user[1] }}</div>
+
+    <div class="section">🚨 Emergency Contacts</div>
 
     <form method="POST" action="/update_profile">
-        <input name="emergency" value="{{ user[2] }}" required>
-        <button>Update Emergency Contact</button>
+
+        <div class="input-group">
+            <i class="fas fa-phone"></i>
+            <input name="c1" placeholder="Contact 1" value="{{ user[2] or '' }}">
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-phone"></i>
+            <input name="c2" placeholder="Contact 2" value="{{ user[3] or '' }}">
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-phone"></i>
+            <input name="c3" placeholder="Contact 3" value="{{ user[4] or '' }}">
+        </div>
+
+        <button>💾 Save Contacts</button>
     </form>
 
-    <br>
-    <a href="/">⬅ Back to Home</a>
+    <a href="/" class="back">⬅ Back to Home</a>
+
 </div>
 
 </body>
