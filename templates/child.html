@@ -3,75 +3,104 @@
 <head>
 <title>Child Help</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
 body {
     margin: 0;
     background: radial-gradient(circle, #0f2027, #000);
     color: white;
-    font-family: 'Segoe UI';
+    font-family: 'Segoe UI', sans-serif;
     text-align: center;
 }
 
-.container {
-    padding: 30px;
-}
-
-/* Header */
-h1 {
-    color: #4da6ff;
-}
-
-/* BIG BUTTON */
-.call-btn {
-    margin-top: 20px;
-    padding: 20px 40px;
-    font-size: 20px;
-    background: #3498db;
-    border: none;
-    border-radius: 50px;
+.back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    text-decoration: none;
     color: white;
-    box-shadow: 0 0 30px #3498db;
-    animation: pulse 1.5s infinite;
 }
 
-@keyframes pulse {
-    0% { box-shadow: 0 0 10px #3498db; }
-    50% { box-shadow: 0 0 40px #3498db; }
-    100% { box-shadow: 0 0 10px #3498db; }
-}
+h1 { margin-top: 60px; }
 
-/* Glass Card */
-.card {
-    margin-top: 25px;
-    padding: 20px;
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
+/* Glass button */
+.action-btn {
+    padding: 18px;
+    border-radius: 18px;
+    backdrop-filter: blur(15px);
     background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s ease;
+    margin: 15px auto;
+    width: 260px;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Map */
-iframe {
-    width: 100%;
-    height: 300px;
-    border-radius: 15px;
+.action-btn i {
+    font-size: 24px;
+    margin-bottom: 6px;
+    display: block;
 }
+
+.action-btn:hover {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow: 0 0 25px rgba(255,255,255,0.2);
+}
+
+.child { color: #4da6ff; }
+
+.info { margin-top: 20px; font-size: 14px; }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-    <h1>🧒 Child Help</h1>
+<a href="/" class="back-btn">← Back</a>
 
-    <a href="tel:1098">
-        <button class="call-btn">🚨 CALL CHILD HELPLINE (1098)</button>
-    </a>
+<h1>🧒 Child Help</h1>
 
-    <div class="card">
-        <h3>Nearby Help Centers</h3>
-        <iframe src="https://maps.google.com/maps?q=child helpline near me&output=embed"></iframe>
-    </div>
+<div onclick="callChild()" class="action-btn child">
+    <i class="fas fa-phone"></i>
+    <span>Call Child Helpline (1098)</span>
 </div>
+
+<div onclick="openNearbyChild()" class="action-btn child">
+    <i class="fas fa-map-marker-alt"></i>
+    <span>Nearby Child Help Centers</span>
+</div>
+
+<div onclick="sendLocation()" class="action-btn child">
+    <i class="fas fa-location-arrow"></i>
+    <span>Share My Location</span>
+</div>
+
+<p class="info">Call and share your location in emergency.</p>
+
+<script>
+function callChild(){ window.location.href = "tel:1098"; }
+
+function openNearbyChild(){
+    navigator.geolocation.getCurrentPosition(function(pos){
+        let lat = pos.coords.latitude;
+        let lon = pos.coords.longitude;
+        window.open(`https://www.google.com/maps/search/child+help+center/@${lat},${lon},15z`);
+    });
+}
+
+function sendLocation(){
+    navigator.geolocation.getCurrentPosition(function(pos){
+        let link = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+        navigator.clipboard.writeText(link);
+        alert("Location copied!");
+    });
+}
+</script>
 
 </body>
 </html>

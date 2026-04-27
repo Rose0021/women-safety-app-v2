@@ -3,71 +3,69 @@
 <head>
 <title>Ambulance</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
-body {
-    margin: 0;
-    background: radial-gradient(circle, #0f2027, #000);
-    color: white;
-    font-family: 'Segoe UI';
-    text-align: center;
-}
+body { margin:0; background: radial-gradient(circle,#0f2027,#000); color:white; text-align:center; font-family:'Segoe UI'; }
+.back-btn { position:absolute; top:20px; left:20px; color:white; text-decoration:none; }
+h1 { margin-top:60px; }
 
-.container {
-    padding: 30px;
-}
-
-h1 {
-    color: #2ecc71;
-}
-
-.call-btn {
-    margin-top: 20px;
-    padding: 20px 40px;
-    font-size: 20px;
-    background: #2ecc71;
-    border: none;
-    border-radius: 50px;
-    color: white;
-    box-shadow: 0 0 30px #2ecc71;
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% { box-shadow: 0 0 10px #2ecc71; }
-    50% { box-shadow: 0 0 40px #2ecc71; }
-    100% { box-shadow: 0 0 10px #2ecc71; }
-}
-
-.card {
-    margin-top: 25px;
-    padding: 20px;
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
+.action-btn {
+    padding:18px;
+    border-radius:18px;
     background: rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.2);
+    margin:15px auto;
+    width:260px;
+    cursor:pointer;
+    transition:0.3s;
 }
 
-iframe {
-    width: 100%;
-    height: 300px;
-    border-radius: 15px;
-}
+.action-btn:hover { transform:scale(1.05); }
+
+.ambulance { color:#2ecc71; }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-    <h1>🚑 Ambulance</h1>
+<a href="/" class="back-btn">← Back</a>
 
-    <a href="tel:108">
-        <button class="call-btn">🚨 CALL AMBULANCE (108)</button>
-    </a>
+<h1>🚑 Ambulance</h1>
 
-    <div class="card">
-        <h3>Nearby Hospitals</h3>
-        <iframe src="https://maps.google.com/maps?q=hospital near me&output=embed"></iframe>
-    </div>
+<div onclick="callAmbulance()" class="action-btn ambulance">
+    <i class="fas fa-phone"></i>
+    <span>Call Ambulance (108)</span>
 </div>
+
+<div onclick="openNearby()" class="action-btn ambulance">
+    <i class="fas fa-map-marker-alt"></i>
+    <span>Nearby Hospitals</span>
+</div>
+
+<div onclick="sendLocation()" class="action-btn ambulance">
+    <i class="fas fa-location-arrow"></i>
+    <span>Share My Location</span>
+</div>
+
+<script>
+function callAmbulance(){ window.location.href="tel:108"; }
+
+function openNearby(){
+    navigator.geolocation.getCurrentPosition(pos=>{
+        window.open(`https://www.google.com/maps/search/hospital/@${pos.coords.latitude},${pos.coords.longitude},15z`);
+    });
+}
+
+function sendLocation(){
+    navigator.geolocation.getCurrentPosition(pos=>{
+        navigator.clipboard.writeText(`https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`);
+        alert("Location copied!");
+    });
+}
+</script>
 
 </body>
 </html>
