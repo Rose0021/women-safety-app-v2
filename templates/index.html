@@ -173,10 +173,58 @@ body {
 .child { color: #4da6ff; }
 .ambulance { color: #2ecc71; }
 .women { color: #d980fa; }
+/* 📱 APP CONTAINER */
+.app {
+    max-width: 420px;
+    margin: auto;
+    min-height: 100vh;
+    position: relative;
+    background: radial-gradient(circle, #0f2027, #000);
+    overflow: hidden;
+}
+
+/* 🔻 BOTTOM NAV */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 420px;
+    background: rgba(0,0,0,0.9);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* NAV ITEMS */
+.nav-item {
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.nav-item i {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 3px;
+}
+
+/* ACTIVE COLOR */
+.nav-item.active {
+    color: #ff4d4d;
+}
+
+/* PREVENT CONTENT HIDE */
+body {
+    padding-bottom: 70px;
+}
 </style>
 </head>
 
 <body>
+<div class="app">
 
 <!-- PROFILE -->
 <a href="/profile" class="profile-btn">
@@ -197,25 +245,32 @@ body {
 
     <div class="emergency-buttons">
 
-        <div class="card police" onclick="callNumber('100')">
-            <i class="fas fa-shield-alt"></i>
-            <span>Police</span>
-        </div>
+        <a href="/police" style="text-decoration:none; display:block;">
+    <div class="card police">
+        <i class="fas fa-shield-alt"></i>
+        <span>Police</span>
+    </div>
+</a>
 
-        <div class="card child" onclick="callNumber('1098')">
-            <i class="fas fa-child"></i>
-            <span>Child Help</span>
-        </div>
+        <a href="/child" style="text-decoration:none; display:block;">
+    <div class="card child">
+        <i class="fas fa-child"></i>
+        <span>Child Help</span>
+    </div>
+</a>
+        <a href="/ambulance" style="text-decoration:none; display:block;">
+    <div class="card ambulance">
+        <i class="fas fa-ambulance"></i>
+        <span>Ambulance</span>
+    </div>
+</a>
 
-        <div class="card ambulance" onclick="callNumber('108')">
-            <i class="fas fa-ambulance"></i>
-            <span>Ambulance</span>
-        </div>
-
-        <div class="card women" onclick="callNumber('1091')">
-            <i class="fas fa-female"></i>
-            <span>Women Help</span>
-        </div>
+        <a href="/women" style="text-decoration:none; display:block;">
+    <div class="card women">
+        <i class="fas fa-female"></i>
+        <span>Women Help</span>
+    </div>
+</a>
 
     </div>
 </div>
@@ -275,11 +330,27 @@ function sendWhatsApp() {
 
 /* IMPORTANT FIX */
 function callNumber(num) {
-    if (confirm("Call " + num + " now?")) {
-        window.location.href = "tel:" + num;
-    }
+    console.log("Call disabled for debug:", num);
 }
+
 </script>
 
+<div class="bottom-nav">
+    <a href="/" class="nav-item active">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+
+    <a href="/police" class="nav-item">
+        <i class="fas fa-shield-alt"></i>
+        <span>Police</span>
+    </a>
+
+    <a href="/profile" class="nav-item">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+    </a>
+</div>
+</div>
 </body>
 </html>

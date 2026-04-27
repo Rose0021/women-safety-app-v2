@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ambulance</title>
+
+<style>
+body {
+    margin: 0;
+    background: radial-gradient(circle, #0f2027, #000);
+    color: white;
+    font-family: 'Segoe UI';
+    text-align: center;
+}
+
+.container {
+    padding: 30px;
+}
+
+h1 {
+    color: #2ecc71;
+}
+
+.call-btn {
+    margin-top: 20px;
+    padding: 20px 40px;
+    font-size: 20px;
+    background: #2ecc71;
+    border: none;
+    border-radius: 50px;
+    color: white;
+    box-shadow: 0 0 30px #2ecc71;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 10px #2ecc71; }
+    50% { box-shadow: 0 0 40px #2ecc71; }
+    100% { box-shadow: 0 0 10px #2ecc71; }
+}
+
+.card {
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.08);
+}
+
+iframe {
+    width: 100%;
+    height: 300px;
+    border-radius: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🚑 Ambulance</h1>
+
+    <a href="tel:108">
+        <button class="call-btn">🚨 CALL AMBULANCE (108)</button>
+    </a>
+
+    <div class="card">
+        <h3>Nearby Hospitals</h3>
+        <iframe src="https://maps.google.com/maps?q=hospital near me&output=embed"></iframe>
+    </div>
+</div>
+
+</body>
+</html>

@@ -223,6 +223,26 @@ def police():
         return redirect('/login')
     return render_template('police.html')
 
+@app.route('/child')
+def child():
+    if 'user' not in session:
+        return redirect('/login')
+    return render_template('child.html')
+
+@app.route('/ambulance')
+def ambulance():
+    if 'user' not in session:
+        return redirect('/login')
+    return render_template('ambulance.html')
+
+@app.route('/women')
+def women():
+    if 'user' not in session:
+        return redirect('/login')
+    return render_template('women.html')            
+    
+
+
 # ---------------- GET POLICE ----------------
 @app.route('/get_police')
 def get_police():

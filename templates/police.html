@@ -1,7 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Police Help</title>
+
+<style>
+body {
+    background: #0f2027;
+    color: white;
+    font-family: Arial;
+    text-align: center;
+}
+
+/* BIG BUTTON */
+.big-call-btn {
+    padding: 20px 50px;
+    font-size: 22px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 0 30px red;
+    animation: pulse 1.5s infinite;
+    margin-top: 20px;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 10px red; }
+    50% { box-shadow: 0 0 40px red; }
+    100% { box-shadow: 0 0 10px red; }
+}
+
+/* CARD */
+.card {
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    margin: 15px;
+    border-radius: 10px;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.distance {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.btn {
+    padding: 8px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+}
+
+.call { background: red; color: white; }
+.map { background: blue; color: white; }
+</style>
+</head>
+
+<body>
+
+<h1>🚓 Police Assistance</h1>
+
+<!-- BIG CALL BUTTON -->
+<a href="tel:100">
+    <button class="big-call-btn">🚨 CALL POLICE (100)</button>
+</a>
+
+<div id="list"></div>
+
 <script>
 
 document.getElementById("list").innerHTML =
-    "<p style='text-align:center;'>📍 Getting your location...</p>";
+    "<p>📍 Getting your location...</p>";
 
 if (navigator.geolocation) {
 
@@ -17,16 +90,14 @@ if (navigator.geolocation) {
 
             let html = "";
 
-            data.forEach((p, index) => {
+            data.forEach((p) => {
                 html += `
-                <div class="card ${index === 0 ? 'nearest' : ''}">
+                <div class="card">
                     <div class="title">🚓 ${p.name}</div>
                     <div class="distance">${p.distance} km away</div>
 
-                    <div class="actions">
-                        <button class="btn call" onclick="callPolice()">📞 Call</button>
-                        <button class="btn map" onclick="openMap(${p.lat}, ${p.lon})">🗺 Map</button>
-                    </div>
+                    <button class="btn call" onclick="callPolice()">📞 Call</button>
+                    <button class="btn map" onclick="openMap(${p.lat}, ${p.lon})">🗺 Map</button>
                 </div>`;
             });
 
@@ -36,12 +107,8 @@ if (navigator.geolocation) {
 
     function error(){
         document.getElementById("list").innerHTML =
-            "<p style='text-align:center;'>⚠ Allow location access</p>";
+            "<p>⚠ Allow location</p>";
     }
-
-} else {
-    document.getElementById("list").innerHTML =
-        "<p style='text-align:center;'>❌ Not supported</p>";
 }
 
 function openMap(lat, lon){
@@ -49,11 +116,10 @@ function openMap(lat, lon){
 }
 
 function callPolice(){
-    if (/Mobi|Android/i.test(navigator.userAgent)) {
-        window.location.href = "tel:100";
-    } else {
-        alert("📞 Call 100 from phone");
-    }
+    window.location.href = "tel:100";
 }
 
 </script>
+
+</body>
+</html>
