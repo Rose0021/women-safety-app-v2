@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, session, jsonify
 import sqlite3
 import os
+import smtplib
+from email.mime.text import MIMEText
 from math import radians, cos, sin, asin, sqrt
 
 app = Flask(__name__)
@@ -162,6 +164,42 @@ def update_profile():
 
     return redirect('/profile')
 
+# ---------------- EMAIL FUNCTION ----------------
+
+def send_email(receiver, subject, body):
+
+    try:
+
+        sender_email = "emergencyehelp123@gmail.com"
+
+        password = "riievnhxqspqxzvl"
+
+        msg = MIMEText(body, "plain", "utf-8")
+
+        msg['Subject'] = subject
+        msg['From'] = sender_email
+        msg['To'] = receiver
+
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+
+        server.starttls()
+
+        server.login(sender_email, password)
+
+        server.send_message(msg)
+
+        server.quit()
+
+        print("Email sent successfully")
+
+        return True
+
+    except Exception as e:
+
+        print("EMAIL ERROR:", e)
+
+        return False
+
 # ---------------- SOS ALERT ----------------
 
 @app.route('/send_alert', methods=['POST'])
@@ -170,7 +208,39 @@ def send_alert():
     if 'user' not in session:
         return "Unauthorized"
 
-    return "SOS Alert Sent Successfully 🚨"
+    username = session['user']
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    c.execute(
+        "SELECT contact1, contact2, contact3 FROM users WHERE username=?",
+        (username,)
+    )
+
+    contacts = c.fetchone()
+
+    conn.close()
+
+    success = False
+
+    for contact in contacts:
+
+        if contact:
+
+            sent = send_email(
+                contact,
+                "SOS Alert 🚨",
+                "EMERGENCY! I need help immediately!"
+            )
+
+            if sent:
+                success = True
+
+    if success:
+        return "SOS Alert Sent Successfully 🚨"
+
+    return "Failed To Send Email"
 
 # ---------------- SEND LOCATION ----------------
 
@@ -180,7 +250,46 @@ def send_location():
     if 'user' not in session:
         return "Unauthorized"
 
-    return "Live Location Shared Successfully 📍"
+    data = request.get_json()
+
+    lat = data.get('latitude')
+    lon = data.get('longitude')
+
+    link = f"https://maps.google.com/?q={lat},{lon}"
+
+    username = session['user']
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    c.execute(
+        "SELECT contact1, contact2, contact3 FROM users WHERE username=?",
+        (username,)
+    )
+
+    contacts = c.fetchone()
+
+    conn.close()
+
+    success = False
+
+    for contact in contacts:
+
+        if contact:
+
+            sent = send_email(
+                contact,
+                "Live Location 🚨",
+                f"My Live Location:\n{link}"
+            )
+
+            if sent:
+                success = True
+
+    if success:
+        return "Location Sent Successfully 📍"
+
+    return "Failed To Send Location"
 
 # ---------------- DISTANCE FUNCTION ----------------
 
