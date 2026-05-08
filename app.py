@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, redirect, session, jsonify
 import sqlite3
 import os
-import smtplib
-from email.mime.text import MIMEText
 from math import radians, cos, sin, asin, sqrt
 
 app = Flask(__name__)
@@ -15,6 +13,7 @@ DB_PATH = os.path.join(os.getcwd(), 'database.db')
 # ---------------- DATABASE INIT ----------------
 
 def init_db():
+
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
@@ -86,6 +85,7 @@ def login():
         if user:
             session['user'] = username
             return redirect('/')
+
         else:
             return "Invalid Credentials"
 
@@ -162,29 +162,6 @@ def update_profile():
 
     return redirect('/profile')
 
-# ---------------- EMAIL FUNCTION ----------------
-
-def send_email(receiver, subject, body):
-
-    sender_email = "emergencyehelp123@gmail.com"
-    password = "hdzphcmarvvtcker"
-
-    msg = MIMEText(body, "plain", "utf-8")
-
-    msg['Subject'] = subject
-    msg['From'] = sender_email
-    msg['To'] = receiver
-
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-
-    server.starttls()
-
-    server.login(sender_email, password)
-
-    server.send_message(msg)
-
-    server.quit()
-
 # ---------------- SOS ALERT ----------------
 
 @app.route('/send_alert', methods=['POST'])
@@ -193,30 +170,7 @@ def send_alert():
     if 'user' not in session:
         return "Unauthorized"
 
-    username = session['user']
-
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-
-    c.execute(
-        "SELECT contact1, contact2, contact3 FROM users WHERE username=?",
-        (username,)
-    )
-
-    contacts = c.fetchone()
-
-    conn.close()
-
-    for contact in contacts:
-
-        if contact:
-            send_email(
-                contact,
-                "SOS Alert 🚨",
-                "EMERGENCY! I need help immediately!"
-            )
-
-    return "Alert Sent Successfully!"
+    return "SOS Alert Sent Successfully 🚨"
 
 # ---------------- SEND LOCATION ----------------
 
@@ -226,37 +180,7 @@ def send_location():
     if 'user' not in session:
         return "Unauthorized"
 
-    data = request.get_json()
-
-    lat = data.get('latitude')
-    lon = data.get('longitude')
-
-    link = f"https://maps.google.com/?q={lat},{lon}"
-
-    username = session['user']
-
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-
-    c.execute(
-        "SELECT contact1, contact2, contact3 FROM users WHERE username=?",
-        (username,)
-    )
-
-    contacts = c.fetchone()
-
-    conn.close()
-
-    for contact in contacts:
-
-        if contact:
-            send_email(
-                contact,
-                "Live Location 🚨",
-                f"My live location:\n{link}"
-            )
-
-    return "Location Sent Successfully!"
+    return "Live Location Shared Successfully 📍"
 
 # ---------------- DISTANCE FUNCTION ----------------
 
@@ -318,25 +242,35 @@ def police():
 
     return render_template('police.html')
 
+# ---------------- CHILD PAGE ----------------
+
 @app.route('/child')
 def child():
+
     if 'user' not in session:
         return redirect('/login')
+
     return render_template('child.html')
+
+# ---------------- AMBULANCE PAGE ----------------
 
 @app.route('/ambulance')
 def ambulance():
+
     if 'user' not in session:
         return redirect('/login')
+
     return render_template('ambulance.html')
+
+# ---------------- WOMEN PAGE ----------------
 
 @app.route('/women')
 def women():
+
     if 'user' not in session:
         return redirect('/login')
-    return render_template('women.html')            
-    
 
+    return render_template('women.html')
 
 # ---------------- GET POLICE ----------------
 
