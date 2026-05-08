@@ -5,129 +5,99 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 
-/* 🌌 Animated background */
-body {
-    margin: 0;
-    height: 100vh;
-    background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #000);
-    background-size: 400% 400%;
-    animation: gradientBG 10s ease infinite;
-    font-family: 'Segoe UI', sans-serif;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#000);
+    background-size:400% 400%;
+    animation:bg 10s ease infinite;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
 }
 
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+@keyframes bg{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
 }
 
-/* 💎 Main card */
-.card {
-    width: 90%;
-    max-width: 420px;
-    padding: 25px;
-    border-radius: 25px;
-    backdrop-filter: blur(20px);
-    background: rgba(255,255,255,0.08);
-    box-shadow: 0 0 40px rgba(0,255,255,0.15);
-    animation: fadeIn 0.6s ease;
+.card{
+    width:90%;
+    max-width:420px;
+    padding:30px;
+    border-radius:25px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(20px);
+    box-shadow:0 0 40px rgba(0,255,255,0.15);
+    text-align:center;
 }
 
-/* entry animation */
-@keyframes fadeIn {
-    from {opacity:0; transform: translateY(30px);}
-    to {opacity:1; transform: translateY(0);}
+h2{
+    margin-bottom:20px;
 }
 
-/* 👤 Avatar */
-.avatar {
-    text-align: center;
-    margin-bottom: 10px;
+.input-group{
+    display:flex;
+    align-items:center;
+    background:rgba(255,255,255,0.1);
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:15px;
 }
 
-.avatar i {
-    font-size: 70px;
-    color: #00e6ff;
-    text-shadow: 0 0 20px #00e6ff;
+.input-group i{
+    margin-right:10px;
+    color:#00c6ff;
 }
 
-/* user info */
-.name {
-    text-align: center;
-    font-size: 20px;
-    font-weight: bold;
+input{
+    width:100%;
+    border:none;
+    outline:none;
+    background:none;
+    color:white;
+    font-size:15px;
 }
 
-.email {
-    text-align: center;
-    font-size: 13px;
-    opacity: 0.7;
-    margin-bottom: 15px;
+input::placeholder{
+    color:#ccc;
 }
 
-/* section */
-.section {
-    margin-top: 15px;
-    font-size: 15px;
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(45deg,#00c6ff,#0072ff);
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
 }
 
-/* 💎 input group */
-.input-group {
-    display: flex;
-    align-items: center;
-    background: rgba(255,255,255,0.1);
-    border-radius: 12px;
-    margin-bottom: 10px;
-    padding: 10px;
+button:hover{
+    transform:scale(1.05);
 }
 
-.input-group i {
-    margin-right: 10px;
-    opacity: 0.7;
+.back-btn{
+    margin-top:15px;
+    display:inline-block;
+    color:#00c6ff;
+    text-decoration:none;
 }
 
-input {
-    background: none;
-    border: none;
-    outline: none;
-    color: white;
-    width: 100%;
-}
-
-/* 🚀 button */
-button {
-    width: 100%;
-    padding: 12px;
-    border-radius: 12px;
-    border: none;
-    margin-top: 10px;
-    background: linear-gradient(45deg, #00c6ff, #0072ff);
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px #00c6ff;
-}
-
-/* back */
-.back {
-    display: block;
-    margin-top: 15px;
-    text-align: center;
-    color: #00c6ff;
-    text-decoration: none;
+.success{
+    color:#00ff99;
+    margin-bottom:10px;
 }
 
 </style>
@@ -137,37 +107,57 @@ button:hover {
 
 <div class="card">
 
-    <!-- 👤 Avatar -->
-    <div class="avatar">
-        <i class="fas fa-user-circle"></i>
-    </div>
+    <h2>👤 Emergency Profile</h2>
 
-    <div class="name">{{ user[0] }}</div>
-    <div class="email">{{ user[1] }}</div>
-
-    <div class="section">🚨 Emergency Contacts</div>
-
-    <form method="POST" action="/update_profile">
+    <form action="/update_profile" method="POST">
 
         <div class="input-group">
-            <i class="fas fa-phone"></i>
-            <input name="c1" placeholder="Contact 1" value="{{ user[2] or '' }}">
+            <i class="fas fa-user"></i>
+            <input type="text"
+            value="{{ user[0] }}"
+            disabled>
         </div>
 
         <div class="input-group">
-            <i class="fas fa-phone"></i>
-            <input name="c2" placeholder="Contact 2" value="{{ user[3] or '' }}">
+            <i class="fas fa-envelope"></i>
+            <input type="email"
+            value="{{ user[1] }}"
+            disabled>
         </div>
 
         <div class="input-group">
-            <i class="fas fa-phone"></i>
-            <input name="c3" placeholder="Contact 3" value="{{ user[4] or '' }}">
+            <i class="fas fa-envelope"></i>
+            <input type="email"
+            name="c1"
+            placeholder="Emergency Email 1"
+            value="{{ user[2] if user[2] else '' }}">
         </div>
 
-        <button>💾 Save Contacts</button>
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email"
+            name="c2"
+            placeholder="Emergency Email 2"
+            value="{{ user[3] if user[3] else '' }}">
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email"
+            name="c3"
+            placeholder="Emergency Email 3"
+            value="{{ user[4] if user[4] else '' }}">
+        </div>
+
+        <button type="submit">
+            Save Emergency Emails
+        </button>
+
     </form>
 
-    <a href="/" class="back">⬅ Back to Home</a>
+    <a href="/" class="back-btn">
+        ⬅ Back to Home
+    </a>
 
 </div>
 
