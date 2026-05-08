@@ -85,10 +85,13 @@ def login():
         conn.close()
 
         if user:
+
             session['user'] = username
+
             return redirect('/')
 
         else:
+
             return "Invalid Credentials"
 
     return render_template('login.html')
@@ -172,6 +175,7 @@ def send_email(receiver, subject, body):
 
         sender_email = "emergencyehelp123@gmail.com"
 
+        # PUT YOUR REAL 16 DIGIT APP PASSWORD
         password = "riievnhxqspqxzvl"
 
         msg = MIMEText(body, "plain", "utf-8")
@@ -180,17 +184,27 @@ def send_email(receiver, subject, body):
         msg['From'] = sender_email
         msg['To'] = receiver
 
-        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server = smtplib.SMTP(
+            'smtp.gmail.com',
+            587
+        )
 
         server.starttls()
 
-        server.login(sender_email, password)
+        server.login(
+            sender_email,
+            password
+        )
 
-        server.send_message(msg)
+        server.sendmail(
+            sender_email,
+            receiver,
+            msg.as_string()
+        )
 
         server.quit()
 
-        print("Email sent successfully")
+        print("EMAIL SENT")
 
         return True
 
@@ -205,91 +219,109 @@ def send_email(receiver, subject, body):
 @app.route('/send_alert', methods=['POST'])
 def send_alert():
 
-    if 'user' not in session:
-        return "Unauthorized"
+    try:
 
-    username = session['user']
+        if 'user' not in session:
+            return "Unauthorized"
 
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
+        username = session['user']
 
-    c.execute(
-        "SELECT contact1, contact2, contact3 FROM users WHERE username=?",
-        (username,)
-    )
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
 
-    contacts = c.fetchone()
+        c.execute(
+            "SELECT contact1, contact2, contact3 FROM users WHERE username=?",
+            (username,)
+        )
 
-    conn.close()
+        contacts = c.fetchone()
 
-    success = False
+        conn.close()
 
-    for contact in contacts:
+        if not contacts:
+            return "No Emergency Emails Saved"
 
-        if contact:
+        for contact in contacts:
 
-            sent = send_email(
-                contact,
-                "SOS Alert 🚨",
-                "EMERGENCY! I need help immediately!"
-            )
+            if contact and contact.strip() != "":
 
-            if sent:
-                success = True
+                try:
 
-    if success:
+                    send_email(
+                        contact,
+                        "SOS Alert 🚨",
+                        "EMERGENCY! I need help immediately!"
+                    )
+
+                except Exception as email_error:
+
+                    print("EMAIL ERROR:", email_error)
+
         return "SOS Alert Sent Successfully 🚨"
 
-    return "Failed To Send Email"
+    except Exception as e:
+
+        print("SEND ALERT ERROR:", e)
+
+        return "Something Went Wrong"
 
 # ---------------- SEND LOCATION ----------------
 
 @app.route('/send_location', methods=['POST'])
 def send_location():
 
-    if 'user' not in session:
-        return "Unauthorized"
+    try:
 
-    data = request.get_json()
+        if 'user' not in session:
+            return "Unauthorized"
 
-    lat = data.get('latitude')
-    lon = data.get('longitude')
+        data = request.get_json()
 
-    link = f"https://maps.google.com/?q={lat},{lon}"
+        lat = data.get('latitude')
+        lon = data.get('longitude')
 
-    username = session['user']
+        link = f"https://maps.google.com/?q={lat},{lon}"
 
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
+        username = session['user']
 
-    c.execute(
-        "SELECT contact1, contact2, contact3 FROM users WHERE username=?",
-        (username,)
-    )
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
 
-    contacts = c.fetchone()
+        c.execute(
+            "SELECT contact1, contact2, contact3 FROM users WHERE username=?",
+            (username,)
+        )
 
-    conn.close()
+        contacts = c.fetchone()
 
-    success = False
+        conn.close()
 
-    for contact in contacts:
+        if not contacts:
+            return "No Emergency Emails Saved"
 
-        if contact:
+        for contact in contacts:
 
-            sent = send_email(
-                contact,
-                "Live Location 🚨",
-                f"My Live Location:\n{link}"
-            )
+            if contact and contact.strip() != "":
 
-            if sent:
-                success = True
+                try:
 
-    if success:
+                    send_email(
+                        contact,
+                        "Live Location 🚨",
+                        f"My Live Location:\n{link}"
+                    )
+
+                except Exception as email_error:
+
+                    print("LOCATION EMAIL ERROR:", email_error)
+
         return "Location Sent Successfully 📍"
 
-    return "Failed To Send Location"
+    except Exception as e:
+
+        print("SEND LOCATION ERROR:", e)
+
+        return "Something Went Wrong"
 
 # ---------------- DISTANCE FUNCTION ----------------
 
