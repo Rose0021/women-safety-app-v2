@@ -11,14 +11,9 @@
 <style>
 body {
     margin: 0;
-    height: 100vh;
     background: radial-gradient(circle, #0f2027, #000);
     font-family: 'Segoe UI', sans-serif;
     color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
     padding-top: 80px;
     overflow-y: auto;
 }
@@ -90,15 +85,17 @@ body {
 
 /* 🚨 Emergency Section */
 .emergency-section {
-    margin-top: 30px;
+    margin-top: 40px;
     text-align: center;
-    width: 90%;
-    max-width: 400px;
+    width: 100%;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .emergency-buttons {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 12px;
     margin-top: 10px;
 }
@@ -173,10 +170,20 @@ body {
 .child { color: #4da6ff; }
 .ambulance { color: #2ecc71; }
 .women { color: #d980fa; }
+/* PREVENT CONTENT HIDE */
+body h1 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.sos {
+    margin: 30px auto;
+}
 </style>
 </head>
 
 <body>
+
 
 <!-- PROFILE -->
 <a href="/profile" class="profile-btn">
@@ -197,25 +204,32 @@ body {
 
     <div class="emergency-buttons">
 
-        <div class="card police" onclick="callNumber('100')">
-            <i class="fas fa-shield-alt"></i>
-            <span>Police</span>
-        </div>
+        <a href="/police" style="text-decoration:none; display:block;">
+    <div class="card police">
+        <i class="fas fa-shield-alt"></i>
+        <span>Police</span>
+    </div>
+</a>
 
-        <div class="card child" onclick="callNumber('1098')">
-            <i class="fas fa-child"></i>
-            <span>Child Help</span>
-        </div>
+        <a href="/child" style="text-decoration:none; display:block;">
+    <div class="card child">
+        <i class="fas fa-child"></i>
+        <span>Child Help</span>
+    </div>
+</a>
+        <a href="/ambulance" style="text-decoration:none; display:block;">
+    <div class="card ambulance">
+        <i class="fas fa-ambulance"></i>
+        <span>Ambulance</span>
+    </div>
+</a>
 
-        <div class="card ambulance" onclick="callNumber('108')">
-            <i class="fas fa-ambulance"></i>
-            <span>Ambulance</span>
-        </div>
-
-        <div class="card women" onclick="callNumber('1091')">
-            <i class="fas fa-female"></i>
-            <span>Women Help</span>
-        </div>
+        <a href="/women" style="text-decoration:none; display:block;">
+    <div class="card women">
+        <i class="fas fa-female"></i>
+        <span>Women Help</span>
+    </div>
+</a>
 
     </div>
 </div>
@@ -275,11 +289,9 @@ function sendWhatsApp() {
 
 /* IMPORTANT FIX */
 function callNumber(num) {
-    if (confirm("Call " + num + " now?")) {
-        window.location.href = "tel:" + num;
-    }
+    console.log("Call disabled for debug:", num);
 }
-</script>
 
+</script>
 </body>
 </html>

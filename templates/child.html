@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Child Help</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body {
+    margin: 0;
+    background: radial-gradient(circle, #0f2027, #000);
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+}
+
+.back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    text-decoration: none;
+    color: white;
+}
+
+h1 { margin-top: 60px; }
+
+/* Glass button */
+.action-btn {
+    padding: 18px;
+    border-radius: 18px;
+    backdrop-filter: blur(15px);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s ease;
+    margin: 15px auto;
+    width: 260px;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn i {
+    font-size: 24px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.action-btn:hover {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow: 0 0 25px rgba(255,255,255,0.2);
+}
+
+.child { color: #4da6ff; }
+
+.info { margin-top: 20px; font-size: 14px; }
+</style>
+</head>
+
+<body>
+
+<a href="/" class="back-btn">← Back</a>
+
+<h1>🧒 Child Help</h1>
+
+<div onclick="callChild()" class="action-btn child">
+    <i class="fas fa-phone"></i>
+    <span>Call Child Helpline (1098)</span>
+</div>
+
+<div onclick="openNearbyChild()" class="action-btn child">
+    <i class="fas fa-map-marker-alt"></i>
+    <span>Nearby Child Help Centers</span>
+</div>
+
+<div onclick="sendLocation()" class="action-btn child">
+    <i class="fas fa-location-arrow"></i>
+    <span>Share My Location</span>
+</div>
+
+<p class="info">Call and share your location in emergency.</p>
+
+<script>
+function callChild(){ window.location.href = "tel:1098"; }
+
+function openNearbyChild(){
+    navigator.geolocation.getCurrentPosition(function(pos){
+        let lat = pos.coords.latitude;
+        let lon = pos.coords.longitude;
+        window.open(`https://www.google.com/maps/search/child+help+center/@${lat},${lon},15z`);
+    });
+}
+
+function sendLocation(){
+    navigator.geolocation.getCurrentPosition(function(pos){
+        let link = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+        navigator.clipboard.writeText(link);
+        alert("Location copied!");
+    });
+}
+</script>
+
+</body>
+</html>

@@ -1,59 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Police Help</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ICONS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body {
+    margin: 0;
+    background: radial-gradient(circle, #0f2027, #000);
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+}
+
+/* BACK BUTTON */
+.back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    text-decoration: none;
+    color: white;
+}
+
+/* TITLE */
+h1 {
+    margin-top: 60px;
+}
+
+/* 💎 GLASS CARD BUTTON (LIKE HOMEPAGE) */
+.action-btn {
+    padding: 18px;
+    border-radius: 18px;
+    backdrop-filter: blur(15px);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s ease;
+    margin: 15px auto;
+    width: 260px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ICON */
+.action-btn i {
+    font-size: 24px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+/* TEXT */
+.action-btn span {
+    font-size: 15px;
+}
+
+/* HOVER */
+.action-btn:hover {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow: 0 0 25px rgba(255,255,255,0.2);
+}
+
+/* RIPPLE */
+.action-btn::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,0.25);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: 0.4s;
+}
+
+.action-btn:active::after {
+    width: 250px;
+    height: 250px;
+}
+
+/* COLORS */
+.police { color: #ff4d4d; }
+.map { color: #4da6ff; }
+.share { color: #2ecc71; }
+
+/* INFO TEXT */
+.info {
+    margin-top: 20px;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<a href="/" class="back-btn">← Back</a>
+
+<h1>🚓 Police Assistance</h1>
+
+<!-- CALL -->
+<div onclick="callPolice()" class="action-btn police">
+    <i class="fas fa-phone"></i>
+    <span>Call Police (100)</span>
+</div>
+
+<!-- NEARBY -->
+<div onclick="openNearbyPolice()" class="action-btn map">
+    <i class="fas fa-map-marker-alt"></i>
+    <span>Show Nearby Police</span>
+</div>
+
+<!-- SHARE -->
+<div onclick="sendLocation()" class="action-btn share">
+    <i class="fas fa-location-arrow"></i>
+    <span>Share My Location</span>
+</div>
+
+<!-- EMERGENCY -->
+<div onclick="emergencyAction()" class="action-btn police">
+    <i class="fas fa-exclamation-triangle"></i>
+    <span>Emergency Action</span>
+</div>
+
+<p class="info">
+Call police immediately and share your location in emergency.
+</p>
+
 <script>
 
-document.getElementById("list").innerHTML =
-    "<p style='text-align:center;'>📍 Getting your location...</p>";
+/* CALL */
+function callPolice(){
+    window.location.href = "tel:100";
+}
 
-if (navigator.geolocation) {
+/* MAP */
+function openNearbyPolice(){
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(function(pos){
+            let lat = pos.coords.latitude;
+            let lon = pos.coords.longitude;
 
-    navigator.geolocation.getCurrentPosition(success, error);
-
-    function success(pos){
-        let lat = pos.coords.latitude;
-        let lon = pos.coords.longitude;
-
-        fetch(`/get_police?lat=${lat}&lon=${lon}`)
-        .then(res => res.json())
-        .then(data => {
-
-            let html = "";
-
-            data.forEach((p, index) => {
-                html += `
-                <div class="card ${index === 0 ? 'nearest' : ''}">
-                    <div class="title">🚓 ${p.name}</div>
-                    <div class="distance">${p.distance} km away</div>
-
-                    <div class="actions">
-                        <button class="btn call" onclick="callPolice()">📞 Call</button>
-                        <button class="btn map" onclick="openMap(${p.lat}, ${p.lon})">🗺 Map</button>
-                    </div>
-                </div>`;
-            });
-
-            document.getElementById("list").innerHTML = html;
+            let url = `https://www.google.com/maps/search/police+station/@${lat},${lon},15z`;
+            window.open(url, "_blank");
+        }, function(){
+            alert("Allow location access");
         });
     }
-
-    function error(){
-        document.getElementById("list").innerHTML =
-            "<p style='text-align:center;'>⚠ Allow location access</p>";
-    }
-
-} else {
-    document.getElementById("list").innerHTML =
-        "<p style='text-align:center;'>❌ Not supported</p>";
 }
 
-function openMap(lat, lon){
-    window.open(`https://maps.google.com/?q=${lat},${lon}`);
+/* SHARE */
+function sendLocation(){
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(function(pos){
+            let lat = pos.coords.latitude;
+            let lon = pos.coords.longitude;
+
+            let link = `https://maps.google.com/?q=${lat},${lon}`;
+            navigator.clipboard.writeText(link);
+
+            alert("Location copied!");
+        });
+    }
 }
 
-function callPolice(){
-    if (/Mobi|Android/i.test(navigator.userAgent)) {
-        window.location.href = "tel:100";
-    } else {
-        alert("📞 Call 100 from phone");
-    }
+/* EMERGENCY */
+function emergencyAction(){
+    alert("Calling police & copying your location...");
+    callPolice();
+    sendLocation();
 }
 
 </script>
+
+</body>
+</html>

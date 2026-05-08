@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Women Help</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body { margin:0; background: radial-gradient(circle,#0f2027,#000); color:white; text-align:center; font-family:'Segoe UI'; }
+.back-btn { position:absolute; top:20px; left:20px; color:white; text-decoration:none; }
+h1 { margin-top:60px; }
+
+.action-btn {
+    padding:18px;
+    border-radius:18px;
+    background: rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.2);
+    margin:15px auto;
+    width:260px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.action-btn:hover { transform:scale(1.05); }
+
+.women { color:#d980fa; }
+</style>
+</head>
+
+<body>
+
+<a href="/" class="back-btn">← Back</a>
+
+<h1>👩 Women Help</h1>
+
+<div onclick="callWomen()" class="action-btn women">
+    <i class="fas fa-phone"></i>
+    <span>Call Women Helpline (1091)</span>
+</div>
+
+<div onclick="openNearby()" class="action-btn women">
+    <i class="fas fa-map-marker-alt"></i>
+    <span>Nearby Women Police</span>
+</div>
+
+<div onclick="sendLocation()" class="action-btn women">
+    <i class="fas fa-location-arrow"></i>
+    <span>Share My Location</span>
+</div>
+
+<script>
+function callWomen(){ window.location.href="tel:1091"; }
+
+function openNearby(){
+    navigator.geolocation.getCurrentPosition(pos=>{
+        window.open(`https://www.google.com/maps/search/women+police/@${pos.coords.latitude},${pos.coords.longitude},15z`);
+    });
+}
+
+function sendLocation(){
+    navigator.geolocation.getCurrentPosition(pos=>{
+        navigator.clipboard.writeText(`https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`);
+        alert("Location copied!");
+    });
+}
+</script>
+
+</body>
+</html>
